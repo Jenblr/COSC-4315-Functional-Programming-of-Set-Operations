@@ -1,0 +1,34 @@
+FUNCTION read_file(filename):
+    TRY
+        OPEN file with filename in read mode
+        READ file contents
+        EXTRACT words while separating digits from file contents
+        CONVERT words to lowercase
+        RETURN the list of words
+    EXCEPT FileNotFoundError:
+        PRINT "Error: File not found: filename"
+        RETURN an empty list
+    EXCEPT IOError AS e:
+        PRINT "Error reading file: filename, e"
+        RETURN an empty list
+
+FUNCTION main():
+    IF number of command line arguments is not equal to 2:
+        PRINT "Usage: python setops.py \"set1=[filename];set2=[filename];operation=[difference|union|intersection]\""
+        EXIT the program with error code 1
+
+    TRY
+        SPLIT command line argument by ';'
+        IF number of parts is not equal to 3:
+            RAISE ValueError with message "Invalid number of arguments"
+        ASSIGN set1, set2, operation by splitting each part and getting the value after '='
+        IF operation is not one of ['difference', 'union', 'intersection']:
+            RAISE ValueError with message "Invalid operation specified"
+    EXCEPT (IndexError, ValueError) AS e:
+        PRINT "Invalid command line arguments: e"
+        EXIT the program with error code 1
+
+    CALL read_file function for set1 and set2 and assign the results to fileA and fileB respectively
+
+IF __name__ equals '__main__':
+    CALL main function
