@@ -11,7 +11,10 @@ l_replaceSymbols = lambda text,symbols: '' if not text else (' ' + l_replaceSymb
 
 # Recursive lambda function to remove periods and split where necessary
 l_removePeriods = lambda item: [item] if '.' not in item or l_isNum(item) else item.replace('.', ' ', 1).split()
-l_isNum = lambda item: (item.replace('.', '', 1).isdigit() if item.count('.') == 1 and item[-1] != '.' else item.isdigit()) if item.count('.') <= 1 else False
+
+# TODO: handle parsing periods correctly for edge cases. (ie., 1.23.45, .12.34, .12.34.5.)
+# l_isNum2 = lambda item: print("correctly parse periods in digit string") if item.replace('.', '').isdigit() and item[-1] != '.' else item.
+l_isNum = lambda word: (word.replace('.', '', 1).isdigit() if word.count('.') == 1 and word[-1] != '.' else word.isdigit()) if word.count('.') <= 1 else False
 
 # Function to recursively process words in the list
 l_processWords = lambda lst: [] if not lst else l_removePeriods(lst[0]) + l_processWords(lst[1:])
@@ -30,11 +33,27 @@ l_intersect = lambda x, y: list(filter(lambda z: z in x, y))
 # Union between 2 lists
 l_union = lambda x, y: l_removeDuplicates(x + y)
 
-# TODO: Difference between two lists
-# l_difference = lambda x, y: list(filter(lambda z: z in x and z not in y))
-def difference(list1, list2):
-    return []
+# Difference between 2 lists
+l_difference = lambda x, y: [] if not x else l_binarySearch(x[0], y) + l_difference(x[1:], y)
 
+# Binary search algorithm to search a list for an element
+l_binarySearch = lambda x, y: [x] if not binarySearchRec(x, y, 0, None) else []
+
+def binarySearchRec(elem, arr, start, end):
+    if end is None:
+        end = len(arr) - 1
+    if start > end:
+        return False
+
+    mid = (start + end) // 2
+    if elem == arr[mid]:
+        return True
+    if elem < arr[mid]:
+        return binarySearchRec(elem, arr, start, mid-1)
+    # elem > arr[mid]
+    return binarySearchRec(elem, arr, mid+1, end)
+
+# TODO: handle input errors and exceptions correctly
 def parseArguments():
     # Create an ArgumentParser object
     parser = ArgumentParser(description='Process set operations.')
@@ -78,7 +97,7 @@ def readFile(filename):
 # Method to handle set operations
 def handleOperations(set1, set2, operation):
     if operation == "union": return l_union(set1, set2)
-    elif operation == "difference": return difference(set1, set2)
+    elif operation == "difference": return l_difference(set1, set2)
     elif operation == "intersection": return l_intersect(set1, set2)
 
 def main():
@@ -89,20 +108,12 @@ def main():
     # Parse the command string
     input1, input2, operation = parseArguments()
 
-    # Output the parsed arguments
-    print(f"Input 1: {input1}")
-    print(f"Input 2: {input2}")
-    print(f"Operation: {operation}")
-
-    # Read input files
-    set1 = readFile(input1)
-    print(set1)
-    
-    set2 = readFile(input2)
-    print(set2)
+    # Read input files and sort before handling operations
+    set1 = l_mergeSort(readFile(input1))
+    set2 = l_mergeSort(readFile(input2))
 
     # TODO: Output to result.txt file
-    print(l_mergeSort(handleOperations(set1, set2, operation)))
+    print(f"Output: {l_mergeSort(handleOperations(set1, set2, operation))}")
 
 if __name__ == '__main__':
     main();
