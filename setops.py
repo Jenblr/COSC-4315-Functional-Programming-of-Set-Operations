@@ -11,7 +11,7 @@ l_replaceSymbols = lambda text,symbols: '' if not text else (' ' + l_replaceSymb
 
 # Recursive lambda function to remove periods and split where necessary
 l_removePeriods = lambda item: [item] if '.' not in item or l_isNum(item) else item.replace('.', ' ', 1).split()
-l_isNum = lambda item: (item.replace('.', '', 1).isdigit() if item.count('.') == 1 and item[-1] != '.' else item.replace('.', '', 1).isdigit()) if item.count('.') <= 1 else False
+l_isNum = lambda item: (item.replace('.', '', 1).isdigit() if item.count('.') == 1 and item[-1] != '.' else item.replace('.', '', 1).isdigit() or (item[:-1].isdigit() and item[-1] == '.'))
 
 # Function to recursively process words in the list
 l_processWords = lambda lst: [] if not lst else l_removePeriods(lst[0]) + l_processWords(lst[1:])
@@ -31,7 +31,7 @@ l_intersect = lambda x, y: list(filter(lambda z: z in x, y))
 l_union = lambda x, y: l_removeDuplicates(x + y)
 
 # Difference between two lists
-l_difference = lambda x, y: list(filter(lambda z: z in x and z not in y, x))
+l_difference = lambda x, y: [item for item in x if item not in y] + [item for item in y if item not in x]
 
 def parseArguments():
     # Create an ArgumentParser object
@@ -66,8 +66,9 @@ def readFile(filename):
     try: 
         with open(filename, 'r') as file:
             file_contents = file.read()
-            print(file_contents)
+            print("File Contents:", file_contents)
             text = l_removeDuplicates(l_toLower(l_processWords(l_replaceSymbols(file_contents, commonSymbols).split())))
+            print("Processed test:", text)
             return text
     except FileNotFoundError:
         print(f"Error: File not found: %s" % filename)
@@ -98,6 +99,7 @@ def main():
 
     # Perform set operations
     result = handleOperations(set1, set2, operation)
+    print("Result:", result)
 
     # Output to result.txt file
     with open("result.txt", "w") as file:
