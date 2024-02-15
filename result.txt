@@ -1,13 +1,1 @@
-apple
-banana
-orange
-pear
-1
-cat
-bird
-fish
-hamster
-0
 blue
-grape
-run

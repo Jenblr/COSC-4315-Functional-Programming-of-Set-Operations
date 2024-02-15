@@ -23,15 +23,15 @@ l_removeDuplicates = lambda x: [] if not x else [x[0]] + l_removeDuplicates(list
 l_merge = lambda left, right: left if not right else right if not left else [left[0]] + l_merge(left[1:], right) if str(left[0]) < str(right[0]) else [right[0]] + l_merge(left, right[1:])
 l_mergeSort = lambda lst: lst if len(lst) <= 1 else l_merge(l_mergeSort(lst[:len(lst)//2]), l_mergeSort(lst[len(lst)//2:]))
 
-# Intersection between 2 lists
+# Intersection between 2 lists - and
 ll_intersect = lambda x, y: [] if not x else [x[0]] + ll_intersect(x[1:], y) if x[0] in y else ll_intersect(x[1:], y)
 l_intersect = lambda x, y: list(filter(lambda z: z in x, y))
 
-# Union between 2 lists
+# Union between 2 lists - or
 l_union = lambda x, y: l_removeDuplicates(x + y)
 
-# Difference between two lists
-l_difference = lambda x, y: [item for item in x if item not in y] + [item for item in y if item not in x]
+# Difference - in x but not in y
+l_difference =  lambda x, y: [item for item in x if item not in y or x.count(item) > y.count(item)]
 
 def parseArguments():
     # Create an ArgumentParser object
