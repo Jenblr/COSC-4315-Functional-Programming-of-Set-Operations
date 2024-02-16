@@ -23,15 +23,29 @@ l_removeDuplicates = lambda x: [] if not x else [x[0]] + l_removeDuplicates(list
 l_merge = lambda left, right: left if not right else right if not left else [left[0]] + l_merge(left[1:], right) if str(left[0]) < str(right[0]) else [right[0]] + l_merge(left, right[1:])
 l_mergeSort = lambda lst: lst if len(lst) <= 1 else l_merge(l_mergeSort(lst[:len(lst)//2]), l_mergeSort(lst[len(lst)//2:]))
 
+# Recursive search algorithm for set operations
+def recursive_search(condition_checker, input_list):
+    if not input_list: # Base case if list is empty
+        return []
+    else:
+        head, *tail = input_list
+        if condition_checker(head):
+            return [head] + recursive_search(condition_checker, tail)
+        else:
+            return recursive_search(condition_checker, tail)
+
 # Intersection between 2 lists - and
-ll_intersect = lambda x, y: [] if not x else [x[0]] + ll_intersect(x[1:], y) if x[0] in y else ll_intersect(x[1:], y)
-l_intersect = lambda x, y: list(filter(lambda z: z in x, y))
+def l_intersect(x, y):
+    intersection_condition = lambda element: element in y
+    return l_removeDuplicates(recursive_search(intersection_condition, x))
 
 # Union between 2 lists - or
 l_union = lambda x, y: l_removeDuplicates(x + y)
 
 # Difference - in x but not in y
-l_difference =  lambda x, y: [item for item in x if item not in y or x.count(item) > y.count(item)]
+def l_difference(x, y):
+    difference_condition = lambda element: element not in y
+    return list(filter(difference_condition, x))
 
 def parseArguments():
     # Create an ArgumentParser object
@@ -67,7 +81,11 @@ def readFile(filename):
         with open(filename, 'r') as file:
             file_contents = file.read()
             print("File Contents:", file_contents)
-            text = l_removeDuplicates(l_toLower(l_processWords(l_replaceSymbols(file_contents, commonSymbols).split())))
+
+            # Create a copy of file_contents before applying transformations
+            file_contents_copy = file_contents[:]
+
+            text = l_removeDuplicates(l_toLower(l_processWords(l_replaceSymbols(file_contents_copy, commonSymbols).split())))
             print("Processed test:", text)
             return text
     except FileNotFoundError:
@@ -86,7 +104,11 @@ def main():
         sys.exit(1)
 
     # Parse the command string
-    input1, input2, operation = parseArguments()
+    try:
+        input1, input2, operation = parseArguments()
+    except (ValueError, FileNotFoundError) as e:
+        print("Error parsing command string:", e)
+        sys.exit(1)
 
     # Output the parsed arguments
     print(f"Input 1: {input1}")
@@ -98,13 +120,37 @@ def main():
     set2 = readFile(input2)
 
     # Perform set operations
-    result = handleOperations(set1, set2, operation)
-    print("Result:", result)
+    if set1 is None or set2 is None:
+        print("Error reading input files.")
+        sys.exit(1)
+
+    try:
+        result = handleOperations(set1, set2, operation)
+    except ValueError as e:
+        print("Error performing set operation:", e)
+        sys.exit(1)
+
+    # Check if the result is empty for intersection or union
+    if operation == "intersection" and not result:
+        result = ["empty set"]
+    elif operation == "union" and not result:
+        result = ["empty set"]
+    elif operation == "difference" and not result:
+        result = ["all or no elements in set A are in B"]
+
+    # Recursively sort the result: numbers first, then words alphabetically
+    sorted_result = l_mergeSort(result)
+
+    print("Result:", sorted_result)
 
     # Output to result.txt file
-    with open("result.txt", "w") as file:
-        for word in result:
-            file.write(word + "\n")
-
+    try: 
+        with open("result.txt", "w") as file:
+            for word in sorted_result:
+                file.write(word + "\n")
+    except IOError as e:
+        print("Error writing to file", e)
+        sys.exit(1)
+        
 if __name__ == '__main__':
     main()
