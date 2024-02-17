@@ -27,13 +27,13 @@ l_mergeSort = lambda lst: lst if len(lst) <= 1 else l_merge(l_mergeSort(lst[:len
 l_search = lambda f, lst: [] if not lst else [lst[0]] + l_search(f, lst[1:]) if f(lst[0]) else l_search(f, lst[1:])
 
 # Intersection between 2 lists - and
-l_intersect = lambda x, y: l_removeDuplicates(l_search(lambda element: element in y, x))
+l_intersect = lambda x, y: l_search(lambda element: element in y, x)
 
 # Union between 2 lists - or
 l_union = lambda x, y: l_removeDuplicates(x + y)
 
 # Difference - in x but not in y
-l_difference = lambda x, y: l_removeDuplicates(l_search(lambda element: element not in y, x))
+l_difference = lambda x, y: l_search(lambda element: element not in y, x)
 
 def parseArguments():
     # Create an ArgumentParser object
@@ -73,7 +73,7 @@ def readFile(filename):
             file_contents_copy = file_contents[:]
 
             text = l_removeDuplicates(l_toLower(l_processWords(l_replaceSymbols(file_contents_copy, commonSymbols).split())))
-            print("Processed test:", text)
+            print("Processed text:", text)
             return text
     except FileNotFoundError:
         print(f"Error: File not found: %s" % filename)
@@ -102,6 +102,12 @@ def main():
     print(f"Input 2: {input2}")
     print(f"Operation: {operation}")
 
+    # A unknown operation was encountered
+    operations = ["intersection", "union", "difference"]
+    if operation not in operations:
+        print("Error: Invalid operation.")
+        sys.exit(1)
+
     # Read input files
     set1 = readFile(input1)
     set2 = readFile(input2)
@@ -117,16 +123,8 @@ def main():
         print("Error performing set operation:", e)
         sys.exit(1)
 
-    # Check if the result is empty for intersection or union
-    if operation == "intersection" and not result:
-        result = ["empty set"]
-    elif operation == "union" and not result:
-        result = ["empty set"]
-    elif operation == "difference" and not result:
-        result = ["all elements in set A are in B"]
-
     # Recursively sort the result: numbers first, then words alphabetically
-    sorted_result = l_mergeSort(result)
+    sorted_result = l_mergeSort(result) if result else []
 
     print("Result:", sorted_result)
 
