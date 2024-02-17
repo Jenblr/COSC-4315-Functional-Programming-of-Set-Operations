@@ -45,7 +45,7 @@ l_union = lambda x, y: l_removeDuplicates(x + y)
 # Difference - in x but not in y
 def l_difference(x, y):
     difference_condition = lambda element: element not in y
-    return list(filter(difference_condition, x))
+    return l_removeDuplicates(recursive_search(difference_condition, x))
 
 def parseArguments():
     # Create an ArgumentParser object
@@ -82,7 +82,6 @@ def readFile(filename):
             file_contents = file.read()
             print("File Contents:", file_contents)
 
-            # Create a copy of file_contents before applying transformations
             file_contents_copy = file_contents[:]
 
             text = l_removeDuplicates(l_toLower(l_processWords(l_replaceSymbols(file_contents_copy, commonSymbols).split())))
@@ -136,7 +135,7 @@ def main():
     elif operation == "union" and not result:
         result = ["empty set"]
     elif operation == "difference" and not result:
-        result = ["all or no elements in set A are in B"]
+        result = ["all elements in set A are in B"]
 
     # Recursively sort the result: numbers first, then words alphabetically
     sorted_result = l_mergeSort(result)
