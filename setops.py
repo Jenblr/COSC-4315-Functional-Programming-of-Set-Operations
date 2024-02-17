@@ -24,28 +24,16 @@ l_merge = lambda left, right: left if not right else right if not left else [lef
 l_mergeSort = lambda lst: lst if len(lst) <= 1 else l_merge(l_mergeSort(lst[:len(lst)//2]), l_mergeSort(lst[len(lst)//2:]))
 
 # Recursive search algorithm for set operations
-def recursive_search(condition_checker, input_list):
-    if not input_list: # Base case if list is empty
-        return []
-    else:
-        head, *tail = input_list
-        if condition_checker(head):
-            return [head] + recursive_search(condition_checker, tail)
-        else:
-            return recursive_search(condition_checker, tail)
+l_search = lambda f, lst: [] if not lst else [lst[0]] + l_search(f, lst[1:]) if f(lst[0]) else l_search(f, lst[1:])
 
 # Intersection between 2 lists - and
-def l_intersect(x, y):
-    intersection_condition = lambda element: element in y
-    return l_removeDuplicates(recursive_search(intersection_condition, x))
+l_intersect = lambda x, y: l_removeDuplicates(l_search(lambda element: element in y, x))
 
 # Union between 2 lists - or
 l_union = lambda x, y: l_removeDuplicates(x + y)
 
 # Difference - in x but not in y
-def l_difference(x, y):
-    difference_condition = lambda element: element not in y
-    return l_removeDuplicates(recursive_search(difference_condition, x))
+l_difference = lambda x, y: l_removeDuplicates(l_search(lambda element: element not in y, x))
 
 def parseArguments():
     # Create an ArgumentParser object
