@@ -7,10 +7,10 @@ l_toLower = lambda x: list(map(lambda word: l_toLowerHelper(word), x))
 l_toLowerHelper = lambda word: ('' if not word else word[0] + l_toLowerHelper(word[1:])) if not word or not 'A' <= word[0] <= 'Z' else (chr(ord(word[0]) + 32) + l_toLowerHelper(word[1:]))
 
 # Strips white space and removes symbols except for periods
-l_replaceSymbols = lambda text,symbols: '' if not text else (' ' + l_replaceSymbols(text[1:],symbols)) if text[0] in symbols else text[0] + l_replaceSymbols(text[1:],symbols)
+l_replaceSymbols = lambda text,symbols: '' if not text else (' ' + l_replaceSymbols(text[1:],symbols)) if binarySearchRec(text[0], symbols, 0, None) else text[0] + l_replaceSymbols(text[1:],symbols)
 
 # Recursive lambda function to remove periods and split where necessary
-l_removePeriods = lambda item: [item] if '.' not in item or l_isNum(item) else item.replace('.', ' ', 1).split()
+l_removePeriods = lambda item: [item] if not binarySearchRec('.', l_mergeSort(list(item)), 0, None) or l_isNum(item) else item.replace('.', ' ', 1).split()
 l_isNum = lambda item: (item.replace('.', '', 1).isdigit() if item.count('.') == 1 and item[-1] != '.' else item.replace('.', '', 1).isdigit() or (item[:-1].isdigit() and item[-1] == '.'))
 
 # Function to recursively process words in the list
@@ -26,14 +26,29 @@ l_mergeSort = lambda lst: lst if len(lst) <= 1 else l_merge(l_mergeSort(lst[:len
 # Recursive search algorithm for set operations
 l_search = lambda f, lst: [] if not lst else [lst[0]] + l_search(f, lst[1:]) if f(lst[0]) else l_search(f, lst[1:])
 
+# Recursive algorithm to check if a given value is in a list
+def binarySearchRec(elem, arr, start, end):
+    if end is None:
+        end = len(arr) - 1
+    if start > end:
+        return False
+    
+    mid = (start + end) // 2
+    if elem == arr[mid]:
+        return True
+    if elem < arr[mid]:
+        return binarySearchRec(elem, arr, start, mid-1)
+    # elem > arr[mid]
+    return binarySearchRec(elem, arr, mid+1, end)
+
 # Intersection between 2 lists - and
-l_intersect = lambda x, y: l_search(lambda element: element in y, x)
+l_intersect = lambda x, y: l_search(lambda element: binarySearchRec(element, y, 0, None), x)
 
 # Union between 2 lists - or
 l_union = lambda x, y: l_removeDuplicates(x + y)
 
 # Difference - in x but not in y
-l_difference = lambda x, y: l_search(lambda element: element not in y, x)
+l_difference = lambda x, y: l_search(lambda element: not binarySearchRec(element, y, 0, None), x)
 
 def parseArguments():
     # Create an ArgumentParser object
@@ -64,7 +79,7 @@ def parseArguments():
 
 # Recursive function to read input files and parse words
 def readFile(filename):
-    commonSymbols = ["!", "?", "'", "\"", ",", "/", "\\", "~", "-", "(", ")", "\n", "\t", "\r", ";", ":", "[", "]", "{", "}", "+", "-", "&", "*", "%", "$", "@", "#", "^", "_", "=", "`", "<", ">", "|"]
+    commonSymbols = l_mergeSort(["!", "?", "'", "\"", ",", "/", "\\", "~", "-", "(", ")", "\n", "\t", "\r", ";", ":", "[", "]", "{", "}", "+", "-", "&", "*", "%", "$", "@", "#", "^", "_", "=", "`", "<", ">", "|"])
     try: 
         with open(filename, 'r') as file:
             file_contents = file.read()
@@ -103,14 +118,14 @@ def main():
     print(f"Operation: {operation}")
 
     # A unknown operation was encountered
-    operations = ["intersection", "union", "difference"]
-    if operation not in operations:
+    operations = l_mergeSort(["intersection", "union", "difference"])
+    if not binarySearchRec(operation, operations, 0, None):
         print("Error: Invalid operation.")
         sys.exit(1)
 
     # Read input files
-    set1 = readFile(input1)
-    set2 = readFile(input2)
+    set1 = l_mergeSort(readFile(input1))
+    set2 = l_mergeSort(readFile(input2))
 
     # Perform set operations
     if set1 is None or set2 is None:
