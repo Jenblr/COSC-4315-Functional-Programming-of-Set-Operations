@@ -10,7 +10,7 @@ l_toLowerHelper = lambda word: ('' if not word else word[0] + l_toLowerHelper(wo
 l_replaceSymbols = lambda text,symbols: '' if not text else (' ' + l_replaceSymbols(text[1:],symbols)) if binarySearchRec(text[0], symbols, 0, None) else text[0] + l_replaceSymbols(text[1:],symbols)
 
 # Recursive lambda function to remove periods and split where necessary
-l_removePeriods = lambda item: [item] if item.count('.') == 0 or l_isNum(item) else ([item.split('.', 1)[0]] + l_removePeriods(item.split('.', 1)[1]) if item.count('.') == 1 else ([item.split('.', 1)[0] + '.' + item.split('.', 1)[1].split('.', 1)[0]] + l_removePeriods(item.split('.', 1)[1].split('.', 1)[1])))
+l_removePeriods = lambda item: [item] if not binarySearchRec('.', l_mergeSort(list(item)), 0, None) or l_isNum(item) else item.replace('.', ' ', 1).split()
 l_isNum = lambda item: (item.replace('.', '', 1).isdigit() if item.count('.') == 1 and item[-1] != '.' else item.replace('.', '', 1).isdigit() or (item[:-1].isdigit() and item[-1] == '.'))
 
 # Function to recursively process words in the list
