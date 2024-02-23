@@ -20,8 +20,33 @@ l_processWords = lambda lst: [] if not lst else l_removePeriods(lst[0]) + l_proc
 l_removeDuplicates = lambda x: [] if not x else [x[0]] + l_removeDuplicates(list(filter(lambda y: y != x[0], x[1:])))
 
 # Merge sort: Θ(n log(n))
-l_merge = lambda left, right: left if not right else right if not left else [left[0]] + l_merge(left[1:], right) if str(left[0]) < str(right[0]) else [right[0]] + l_merge(left, right[1:])
-l_mergeSort = lambda lst: lst if len(lst) <= 1 else l_merge(l_mergeSort(lst[:len(lst)//2]), l_mergeSort(lst[len(lst)//2:]))
+def l_mergeSort(lst):
+    if len(lst) <= 1:
+        return lst
+    
+    mid = len(lst) // 2
+    left = l_mergeSort(lst[:mid])
+    right = l_mergeSort(lst[mid:])
+
+    return l_merge(left, right)
+
+def l_merge(left, right):
+    if not right:
+        return left
+    if not left:
+        return right
+
+    if isinstance(left[0], (int, float)) and isinstance(right[0], (int, float)):
+        if left[0] < right[0]:
+            return [left[0]] + l_merge(left[1:], right)
+        else:
+            return [right[0]] + l_merge(left, right[1:])
+    else:
+        if str(left[0]) < str(right[0]):
+            return [left[0]] + l_merge(left[1:], right)
+        else:
+            return [right[0]] + l_merge(left, right[1:])
+
 
 # Recursive search algorithm for set operations
 l_search = lambda f, lst: [] if not lst else [lst[0]] + l_search(f, lst[1:]) if f(lst[0]) else l_search(f, lst[1:])
@@ -34,21 +59,21 @@ def binarySearchRec(elem, arr, start, end):
         return False
 
     mid = (start + end) // 2
-    if elem == arr[mid]:
+    if str(elem) == str(arr[mid]):
         return True
-    if elem < arr[mid]:
+    if str(elem) < str(arr[mid]):
         return binarySearchRec(elem, arr, start, mid-1)
     # elem > arr[mid]
     return binarySearchRec(elem, arr, mid+1, end)
 
 # Intersection between 2 lists - and
-l_intersect = lambda x, y: l_search(lambda element: binarySearchRec(element, y, 0, None), x)
+l_intersect = lambda x, y: l_search(lambda element: binarySearchRec(str(element), y, 0, None), list(map(str, x)))
 
 # Union between 2 lists - or
 l_union = lambda x, y: l_removeDuplicates(x + y)
 
 # Difference - in x but not in y
-l_difference = lambda x, y: l_search(lambda element: not binarySearchRec(element, y, 0, None), x)
+l_difference = lambda x, y: l_search(lambda element: not binarySearchRec(str(element), y, 0, None), list(map(str, x)))
 
 def parseArguments():
     # Create an ArgumentParser object
@@ -88,6 +113,10 @@ def readFile(filename):
             file_contents_copy = file_contents[:]
 
             text = l_removeDuplicates(l_toLower(l_processWords(l_replaceSymbols(file_contents_copy, commonSymbols).split())))
+            
+            # Convert numerical strings to integers or floats
+            text = [int(word) if word.isdigit() else float(word) if word.replace('.', '', 1).isdigit() else word for word in text]
+            
             print("Processed test:", text)
             return text
     except FileNotFoundError:
@@ -96,6 +125,7 @@ def readFile(filename):
     except Exception as e:
         print(f"Error reading file: {e}")
         return []
+
 
 # Method to handle set operations
 def handleOperations(set1, set2, operation):
@@ -158,10 +188,10 @@ def main():
     try: 
         with open("result.txt", "w") as file:
             for word in sorted_result:
-                file.write(word + "\n")
+                file.write(str(word) + "\n")  # Convert word to string before concatenation
     except IOError as e:
         print("Error writing to file", e)
         sys.exit(1)
-        
+            
 if __name__ == '__main__':
     main()
