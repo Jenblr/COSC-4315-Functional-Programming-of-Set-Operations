@@ -20,7 +20,7 @@ l_processWords = lambda lst: [] if not lst else l_removePeriods(lst[0]) + l_proc
 l_removeDuplicates = lambda x: [] if not x else [x[0]] + l_removeDuplicates(list(filter(lambda y: y != x[0], x[1:])))
 
 # Merge sort: Θ(n log(n))
-l_merge = lambda left, right: left if not right else right if not left else [left[0]] + l_merge(left[1:], right) if left[0] < right[0] else [right[0]] + l_merge(left, right[1:])
+l_merge = lambda left, right: left if not right else right if not left else [left[0]] + l_merge(left[1:], right) if str(left[0]) < str(right[0]) else [right[0]] + l_merge(left, right[1:])
 l_mergeSort = lambda lst: lst if len(lst) <= 1 else l_merge(l_mergeSort(lst[:len(lst)//2]), l_mergeSort(lst[len(lst)//2:]))
 
 # Recursive search algorithm for set operations
@@ -150,9 +150,8 @@ def main():
         result = ["all elements in set A are in B"]
 
     # Recursively sort the result: numbers first, then words alphabetically
-    sorted_result = sorted(result, key=lambda x: (not x.isdigit(), int(x) if x.isdigit() else x))
+    sorted_result = l_mergeSort(result)
 
-    # Output the sorted result
     print("Result:", sorted_result)
 
     # Output to result.txt file
