@@ -36,15 +36,15 @@ to perform, and it outputs the result to a file name "result.txt".
     * If the result is empty for intersection or union, appropriate messages are written to the file.
 
 **USAGE:**
-1. Command Line Interface:
+* Command Line Interface:
     * The program is executed from the command line using Python 3.
     * Users provide a command line string contianing the names of the input files, the operation to
     perform, and other parameteres.
-2. Command String Format:
+* Command String Format:
     * The command string should be formatted as followed: 
     python 3 setops.py "set1=<filename>;set2=<filename>;operation=<operation>"
     * Example: python3 setops.py "set1=a1.txt;set2=b1.txt;operation=union"
-3. Valid Operations:
+* Valid Operations:
     * Users can specify one of the following operations: 'union', 'intersection', or 'difference'
 
 **LAMBDA FUNCTIONS OVERVIEW:**
@@ -54,20 +54,20 @@ and conciseness of the code.
 function definitions.
 
 Lambda Functions: 
-1. Lowercase Conversion:
+* Lowercase Conversion:
     * Lambda function 'l_toLower' converts the character to lowercase recursively.
     * It is used for processing words and ensuring uniformity in the input data
-2. Symbol Stripping:
+* Symbol Stripping:
     * Lambda function 'l_replaceSymbols' removes symbols from text while preserving periods.
     * It uses a recursive approach to replace syumbols with spaces or remove them entirely.
-3. Period Removal and Splitting:
+* Period Removal and Splitting:
     * Lambda function 'l_removePeriods' splits text where necessary while retaining periods in valid
     numerical values
     * It ensures proper segmentation of words and numerical values.
-4. Set Operations and Search:
+* Set Operations and Search:
     * Lambda function 'l_search' is employed for recursive search operations within lists.
     * It enables efficient searchign for elements based on custom criteria.
-5. Merge Sort: 
+* Merge Sort: 
     * Lambda functions 'l_mergeSort' and 'l_merge' implement the merge sort algorithm recursively.
     * They  facilitate sorting of elemnts, ensuring efficient set operations.
 
