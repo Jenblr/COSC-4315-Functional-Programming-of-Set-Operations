@@ -2,7 +2,7 @@
 
 # Authors: Jennifer Nguyen, Elinnoel Nunez
 
-# INTRODUCTION:
+**INTRODUCTION:**
 This Python program is designed to perform set operations such as union, intersection, and difference on two
 sets of data read from files. It provides a command-line interface for specifying the sets and the operation
 to perform, and it outputs the result to a file name "result.txt".
@@ -11,6 +11,8 @@ to perform, and it outputs the result to a file name "result.txt".
 - [Features](#FEATURES)
 - [Usage](#USAGE)
 - [Lamda Functions Overview](#LAMDA-FUNCTION-OVERVIEW)
+- [Search Algorithm](#SEARCH-ALGORITHM)
+- [Sort Algorithm](#SORT-ALGORITHM)
 - [Issues Encountered](#ISSUE-ENCOUNTERED)
 - [Dependencies](#DEPENDENCIES)
 - [Files Includes](#FILES-INCLUDED)
@@ -69,11 +71,11 @@ Lambda Functions:
     * Lambda functions 'l_mergeSort' and 'l_merge' implement the merge sort algorithm recursively.
     * They  facilitate sorting of elemnts, ensuring efficient set operations.
 
-**Search Algorithm**
+**SEARCH ALGORITHM:**
 * The program employs a binary search algorithm for efficient searching within lists. 
 * Time Complexity: O(log(n))
 
-**Sort Algorithm**
+**SORT ALGORITHM:**
 * This program implements a merge sort algorithm to sort elements from input files.
 * Time Complexity: O(nlog(n))
 * The merge sort algorithm is utilized within the program for:
