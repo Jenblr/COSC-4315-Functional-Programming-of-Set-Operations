@@ -17,7 +17,7 @@ l_isNum = lambda item: (item.replace('.', '', 1).isdigit() if item.count('.') ==
 l_processWords = lambda lst: [] if not lst else l_removePeriods(lst[0]) + l_processWords(lst[1:])
 
 # Remove duplicates from a given list
-l_removeDuplicates = lambda x: [] if not x else [x[0]] + l_removeDuplicates(list(filter(lambda y: y != x[0], x[1:])))
+l_removeDuplicates = lambda x: [] if not x else [x[0]] + l_removeDuplicates(l_search(lambda y: y != x[0], x[1:]))
 
 # Merge sort: Θ(n log(n))
 def l_mergeSort(lst):
