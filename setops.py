@@ -2,34 +2,40 @@ from argparse import ArgumentParser
 import sys
 sys.setrecursionlimit(10000)
 
+# Utils
+def splitRec(x, y):
+    if x.find(y) == -1 or len(x) <= 1:
+        return [x]
+    elif x.find(y) == len(x)-1:
+        return [x[:x.find(y)]]
+    elif y == '':
+        if len(x) == 1:
+            return [x]
+        return [x[x.find(y)]] + splitRec(x[x.find(y)+1:], y)
+    elif x.find(y) == 0:
+        return [] + splitRec(x[x.find(y)+1:], y)
+    else:
+        return [x[:x.find(y)]] + splitRec(x[x.find(y)+1:], y)
+
 # Lambda lowercase that uses recursive function to generate lowercase characters
 l_toLower = lambda x: list(map(lambda word: l_toLowerHelper(word), x))
 l_toLowerHelper = lambda word: ('' if not word else word[0] + l_toLowerHelper(word[1:])) if not word or not 'A' <= word[0] <= 'Z' else (chr(ord(word[0]) + 32) + l_toLowerHelper(word[1:]))
 
 # Strips white space and removes symbols except for periods
-l_replaceSymbols = lambda text,symbols: '' if not text else (' ' + l_replaceSymbols(text[1:],symbols)) if binarySearchRec(text[0], symbols, 0, None) else text[0] + l_replaceSymbols(text[1:],symbols)
+l_replaceSymbols = lambda text, symbols: '' if not text else (' ' + l_replaceSymbols(text[1:],symbols)) if binarySearchRec(text[0], symbols, 0, None) else text[0] + l_replaceSymbols(text[1:],symbols)
 
 # Recursive lambda function to remove periods and split where necessary
-l_removePeriods = lambda item: [item] if not binarySearchRec('.', l_mergeSort(list(item)), 0, None) or l_isNum(item) else item.replace('.', ' ', 1).split()
+l_removePeriods = lambda item: [item] if not binarySearchRec('.', l_mergeSort(list(item)), 0, None) or l_isNum(item) else splitRec(item, '.')
 l_isNum = lambda item: (item.replace('.', '', 1).isdigit() if item.count('.') == 1 and item[-1] != '.' else item.replace('.', '', 1).isdigit() or (item[:-1].isdigit() and item[-1] == '.'))
 
 # Function to recursively process words in the list
 l_processWords = lambda lst: [] if not lst else l_removePeriods(lst[0]) + l_processWords(lst[1:])
 
 # Remove duplicates from a given list
-l_removeDuplicates = lambda x: [] if not x else [x[0]] + l_removeDuplicates(list(filter(lambda y: y != x[0], x[1:])))
-l_mergeSort = lambda lst: lst if len(lst) <= 1 else l_merge(l_mergeSort(lst[:len(lst)//2]), l_mergeSort(lst[len(lst)//2:]))
+l_removeDuplicates = lambda x: [] if not x else [x[0]] + l_removeDuplicates(l_search(lambda y: y != x[0], x[1:]))
 
 # Merge sort: Θ(n log(n))
-def l_mergeSort(lst):
-    if len(lst) <= 1:
-        return lst
-    
-    mid = len(lst) // 2
-    left = l_mergeSort(lst[:mid])
-    right = l_mergeSort(lst[mid:])
-
-    return l_merge(left, right)
+l_mergeSort = lambda lst: lst if len(lst) <= 1 else l_merge(l_mergeSort(lst[:len(lst)//2]), l_mergeSort(lst[len(lst)//2:]))
 
 def l_merge(left, right):
     if not right:
@@ -78,22 +84,22 @@ l_difference = lambda x, y: l_search(lambda element: not binarySearchRec(str(ele
 
 def parseArguments():
     # Create an ArgumentParser object
-    parser = ArgumentParser(description='Process set operations.')
+    parser = ArgumentParser(description='Process set operations for 2 input text files.')
 
     # Add an argument for the command string
-    parser.add_argument('command', type=str, help='Command string containing set1, set2, and operation.')
+    parser.add_argument('command', type=str, help='python3 setops.py set1=[filename];set2=[filename];operation=[difference|intersection|union]')
 
     # Parse the arguments
     args = parser.parse_args()
     # Split the command string by semicolons to get individual arguments
-    arguments = args.command.split(';')
+    arguments = splitRec(args.command, ';')
     
     # Initialize variables to store set names and operation
     set1, set2, operation = None, None, None
     
     # Iterate over each argument and parse it
     for arg in arguments:
-        key, value = arg.split('=')
+        key, value = splitRec(arg, '=')
         if key == 'set1':
             set1 = value
         elif key == 'set2':
@@ -109,7 +115,6 @@ def readFile(filename):
     try: 
         with open(filename, 'r') as file:
             file_contents = file.read()
-            print("File Contents:", file_contents)
 
             file_contents_copy = file_contents[:]
 
@@ -118,7 +123,6 @@ def readFile(filename):
             # Convert numerical strings to integers or floats
             text = [int(word) if word.isdigit() else float(word) if word.replace('.', '', 1).isdigit() else word for word in text]
             
-            print("Processed text:", text)
             return text
     except FileNotFoundError:
         print(f"Error: File not found: {filename}")
@@ -136,20 +140,16 @@ def handleOperations(set1, set2, operation):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python3 setops.py <argument>")
+        print("Missing arguments")
+        print("Usage: python3 setops.py set1=[filename];set2=[filename];operation=[difference|intersection|union]")
         sys.exit(1)
-
+    
     # Parse the command string
     try:
         input1, input2, operation = parseArguments()
     except (ValueError, FileNotFoundError) as e:
         print("Error parsing command string:", e)
         sys.exit(1)
-
-    # Output the parsed arguments
-    print(f"Input 1: {input1}")
-    print(f"Input 2: {input2}")
-    print(f"Operation: {operation}")
 
     # A unknown operation was encountered
     operations = l_mergeSort(["intersection", "union", "difference"])
