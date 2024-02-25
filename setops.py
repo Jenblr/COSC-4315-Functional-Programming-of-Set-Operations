@@ -106,6 +106,8 @@ def parseArguments():
             set2 = value
         elif key == 'operation':
             operation = value
+        else:
+            raise Exception('Unknown argument: ' + key)
     
     return set1, set2, operation
 
@@ -124,12 +126,10 @@ def readFile(filename):
             text = [int(word) if word.isdigit() else float(word) if word.replace('.', '', 1).isdigit() else word for word in text]
             
             return text
-    except FileNotFoundError:
-        print(f"Error: File not found: {filename}")
-        return []
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"Error: File not found: {filename}") from e
     except Exception as e:
-        print(f"Error reading file: {e}")
-        return []
+        raise Exception(f"Error reading file: {e}") from e
 
 
 # Method to handle set operations
@@ -147,7 +147,7 @@ def main():
     # Parse the command string
     try:
         input1, input2, operation = parseArguments()
-    except (ValueError, FileNotFoundError) as e:
+    except (ValueError, FileNotFoundError, Exception) as e:
         print("Error parsing command string:", e)
         sys.exit(1)
 
@@ -158,8 +158,15 @@ def main():
         sys.exit(1)
 
     # Read input files
-    set1 = l_mergeSort(readFile(input1))
-    set2 = l_mergeSort(readFile(input2))
+    try:
+        set1 = l_mergeSort(readFile(input1))
+        set2 = l_mergeSort(readFile(input2))
+    except (ValueError, FileNotFoundError) as e:
+        print(e)
+        sys.exit(1)
+    except Exception as e:
+        print(e)
+        sys.exit(1)
 
     # Perform set operations
     if set1 is None or set2 is None:
