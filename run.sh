@@ -13,3 +13,4 @@ python3 setops.py "set1=a4.txt;set2=b4.txt;operation=union"
 python3 setops.py "set1=a4.txt;set2=b4.txt;operation=asdfasdf"
 python3 setops.py "set1=a4.txt;set2=b5.txt;operation=union"
 python3 setops.py "set1=a4.txt;st2=b4.txt;operation=union"
+python3 setops.py -h

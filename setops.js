@@ -1,3 +1,4 @@
+const yargs = require('yargs');
 const fs = require('fs');
 
 // Utils
@@ -135,6 +136,12 @@ const l_difference = (x, y) => {
 };
 
 function parseArguments() {
+    const argv = yargs
+        .usage('Usage: node $0 "set1=[filename];set2=[filename];operation=[difference|intersection|union]"')
+        .help() // Enable built-in help option
+        .alias('h', 'help') // Alias for help option
+        .argv;
+
     // Create an ArgumentParser object
     const args = process.argv.slice(2);
     const command = args.join(" ");

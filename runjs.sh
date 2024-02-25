@@ -13,3 +13,4 @@ node setops.js "set1=a4.txt;set2=b4.txt;operation=union"
 node setops.js "set1=a4.txt;set2=b4.txt;operation=asdfasdf"
 node setops.js "set1=a4.txt;set2=b5.txt;operation=union"
 node setops.js "set1=a4.txt;st2=b4.txt;operation=union"
+node setops.js -h
