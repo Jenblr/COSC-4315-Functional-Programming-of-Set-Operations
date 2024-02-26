@@ -22,14 +22,52 @@ l_toLower = lambda x: list(map(lambda word: l_toLowerHelper(word), x))
 l_toLowerHelper = lambda word: ('' if not word else word[0] + l_toLowerHelper(word[1:])) if not word or not 'A' <= word[0] <= 'Z' else (chr(ord(word[0]) + 32) + l_toLowerHelper(word[1:]))
 
 # Strips white space and removes symbols except for periods
-l_replaceSymbols = lambda text, symbols: '' if not text else (' ' + l_replaceSymbols(text[1:],symbols)) if binarySearchRec(text[0], symbols, 0, None) else text[0] + l_replaceSymbols(text[1:],symbols)
+l_replaceSymbols = lambda text, symbols: '' if not text else (' ' + l_replaceSymbols(text[1:],symbols)) if seqSearchRec(text[0], symbols) else text[0] + l_replaceSymbols(text[1:],symbols)
 
-# Recursive lambda function to remove periods and split where necessary
-l_removePeriods = lambda item: [item] if not binarySearchRec('.', l_mergeSort(list(item)), 0, None) or l_isNum(item) else splitRec(item, '.')
+# Checks if a string contains a mixture of characters and digits
+l_checkString = lambda text: all(map(lambda c: c.isalpha(), text)) or all(map(lambda c: c.isdigit(), text))
+
+# Split numbers and words from a string
+l_splitNumbersWords = lambda text: [text] if l_checkString(text) else splitStringRec(text, [], '')
+
+# Define a recursive function to split the string into words and digits: Example: test2right35below
+def splitStringRec(string, result=[], current=''):
+    # Base case: if the string is empty, add the current word or digit to the result list and return it
+    if not string:
+        if l_isNum(current):
+            result.append(current)
+        elif current.isalpha():
+            result.append(current)
+        else:
+            if current[0] == '.' and current[-1] == '.':
+                temp = current[1:-1]
+                if temp:
+                    result.append(current[1:-1])
+            elif current[0] == '.':
+                result.append(current[1:])
+            else:
+                if len(current) != 0:
+                    result.append(current[:-1])
+        return result
+
+    if l_isNum(current) and not l_isNum(current + string[0]):
+        result.append(current)
+        newstr = string[1:] if len(string) > 1 and string[0] == '.' else string
+        string = newstr
+        current = ''
+    elif current.isalpha() and (string[0].isdigit() or string[0] == '.'):
+        result.append(current)
+        current = ''
+
+    current += string[0]
+
+    # Recursively split the rest of the string
+    return splitStringRec(string[1:], result, current)
+
 l_isNum = lambda item: (item.replace('.', '', 1).isdigit() if item.count('.') == 1 and item[-1] != '.' else item.replace('.', '', 1).isdigit() or (item[:-1].isdigit() and item[-1] == '.'))
 
 # Function to recursively process words in the list
-l_processWords = lambda lst: [] if not lst else l_removePeriods(lst[0]) + l_processWords(lst[1:])
+l_processWords = lambda lst: [] if not lst else l_splitNumbersWords(lst[0]) + l_processWords(lst[1:])
 
 # Remove duplicates from a given list
 l_removeDuplicates = lambda x: [] if not x else [x[0]] + l_removeDuplicates(l_search(lambda y: y != x[0], x[1:]))
@@ -58,29 +96,27 @@ def l_merge(left, right):
 # Recursive search algorithm for set operations
 l_search = lambda f, lst: [] if not lst else [lst[0]] + l_search(f, lst[1:]) if f(lst[0]) else l_search(f, lst[1:])
 
-# Recursive algorithm to check if a given value is in a list
-def binarySearchRec(elem, arr, start, end):
-    if end is None:
-        end = len(arr) - 1
-    if start > end:
+# Recursive sequential search algorithm
+def seqSearchRec(target, arr):
+    # Base case: if the array is empty, return False
+    if not arr:
         return False
 
-    mid = (start + end) // 2
-    if str(elem) == str(arr[mid]):
+    # If the first element is the target, return True
+    if target == arr[0]:
         return True
-    if str(elem) < str(arr[mid]):
-        return binarySearchRec(elem, arr, start, mid-1)
-    # elem > arr[mid]
-    return binarySearchRec(elem, arr, mid+1, end)
+
+    # Recursively search the rest of the array
+    return seqSearchRec(target, arr[1:])
 
 # Intersection between 2 lists - and
-l_intersect = lambda x, y: l_search(lambda element: binarySearchRec(str(element), y, 0, None), list(map(str, x)))
+l_intersect = lambda x, y: l_search(lambda element: seqSearchRec(element, y), x)
 
 # Union between 2 lists - or
 l_union = lambda x, y: l_removeDuplicates(x + y)
 
 # Difference - in x but not in y
-l_difference = lambda x, y: l_search(lambda element: not binarySearchRec(str(element), y, 0, None), list(map(str, x)))
+l_difference = lambda x, y: l_search(lambda element: not seqSearchRec(element, y), x)
 
 def parseArguments():
     # Create an ArgumentParser object
@@ -120,11 +156,10 @@ def readFile(filename):
 
             file_contents_copy = file_contents[:]
 
-            text = l_removeDuplicates(l_toLower(l_processWords(l_replaceSymbols(file_contents_copy, commonSymbols).split())))
+            text = l_removeDuplicates(l_toLower(l_processWords(splitRec(l_replaceSymbols(file_contents_copy, commonSymbols), ' '))))
             
             # Convert numerical strings to integers or floats
             text = [int(word) if word.isdigit() else float(word) if word.replace('.', '', 1).isdigit() else word for word in text]
-            
             return text
     except FileNotFoundError as e:
         raise FileNotFoundError(f"Error: File not found: {filename}") from e
@@ -153,7 +188,7 @@ def main():
 
     # A unknown operation was encountered
     operations = l_mergeSort(["intersection", "union", "difference"])
-    if not binarySearchRec(operation, operations, 0, None):
+    if not seqSearchRec(operation, operations):
         print("Error: Invalid operation.")
         sys.exit(1)
 
