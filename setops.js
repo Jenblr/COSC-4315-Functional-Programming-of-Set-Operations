@@ -30,15 +30,63 @@ const l_toLowerHelper = (word) => {
 // Strips white space and removes symbols except for periods
 const l_replaceSymbols = (text, symbols) => {
     if (!text) return '';
-    if (binarySearchRec(text[0], symbols, 0, null)) return ' '.concat(l_replaceSymbols(text.slice(1), symbols));
+    if (seqSearchRec(text[0], symbols)) return ' '.concat(l_replaceSymbols(text.slice(1), symbols));
     return text[0].concat(l_replaceSymbols(text.slice(1), symbols));
 };
 
-// Recursive lambda function to remove periods and split where necessary
-const l_removePeriods = (item) => {
-    if (!binarySearchRec('.', l_mergeSort([...item]), 0, null) || l_isNum(item)) return [item];
-    return splitRec(item, '.');
-};
+const l_isAlpha = (str) => {
+    return str.match(/^[a-zA-Z]+$/) !== null;
+}
+
+// Checks if a string contains a mixture of characters and digits
+const l_checkString = (text) => {
+    return l_isAlpha(text) || splitRec(text,'').every((c) => c.match(/\d/));
+}
+
+// Split numbers and words from a string
+const l_splitNumbersWordsRec = (text) => {
+    if (l_checkString(text)) return [text];
+    return splitStringRec(text, [], '');
+}
+
+// Define a recursive function to split the string into words and digits: Example: test2right35below
+const splitStringRec = function(string, result=[], current='') {
+    if (!string) {
+        if (l_isNum(current)) {
+            result.push(current);
+        } else if (l_isAlpha(current)) {
+            result.push(current);
+        } else {
+            if (current[0] === '.' && current.slice(-1) === '.') {
+                const temp = current.slice(1, -1);
+                if (temp) {
+                    result.push(current.slice(1, -1));
+                }
+            } else if (current[0] === '.') {
+                result.push(current.slice(1));
+            } else {
+                if (current.length !== 0) {
+                    result.push(current.slice(0, -1));
+                }
+            }
+        }
+        return result;
+    }
+
+    if (l_isNum(current) && !l_isNum(current + string[0])) {
+        result.push(current);
+        const newstr = string.length > 1 && string[0] === '.' ? string.slice(1) : string;
+        string = newstr;
+        current = '';
+    } else if (current.match(/[a-zA-Z]/) && (string[0].match(/\d/) || string[0] === '.')) {
+        result.push(current);
+        current = '';
+    }
+
+    current += string[0];
+    return splitStringRec(string.slice(1), result, current);
+}
+
 const l_isNum = (item) => {
     if (splitRec(item, '.').length === 2 && !item.endsWith('.')) return item.replace('.', '').match(/^\d+$/);
     return item.replace('.', '').match(/^\d+$/) || (item.slice(0, -1).match(/^\d+$/) && item.endsWith('.'));
@@ -47,7 +95,7 @@ const l_isNum = (item) => {
 // Function to recursively process words in the list
 const l_processWords = (lst) => {
     if (!lst.length) return [];
-    return l_removePeriods(lst[0]).concat(l_processWords(lst.slice(1)));
+    return l_splitNumbersWordsRec(lst[0]).concat(l_processWords(lst.slice(1)));
 };
 
 // Remove duplicates from a given list
@@ -104,25 +152,16 @@ const l_search = (f, lst) => {
     }
 };
 
-// Recursive algorithm to check if a given value is in a list
-const binarySearchRec = (elem, arr, start = 0, end = arr.length - 1) => {
-    if (end == null) end = arr.length - 1;
-    if (start > end) return false;
-
-    const mid = Math.floor((start + end) / 2);
-
-    if (String(elem) == String(arr[mid])) {
-        return true;
-    } else if (String(elem) < String(arr[mid])) {
-        return binarySearchRec(elem, arr, start, mid - 1);
-    } else {
-        return binarySearchRec(elem, arr, mid + 1, end);
-    }
+// Recursive sequential search algorithm
+const seqSearchRec = (target, arr) => {
+    if (!arr.length) return false;
+    if (target === arr[0]) return true;
+    return seqSearchRec(target, arr.slice(1));
 };
 
 // Intersection between 2 lists - and
 const l_intersect = (x, y) => {
-    return l_search((element) => binarySearchRec(String(element), y, 0, null), x.map((item) => String(item)));
+    return l_search((element) => seqSearchRec(element, y), x);
 };
 
 // Union between 2 lists - or
@@ -132,7 +171,7 @@ const l_union = (x, y) => {
 
 // Difference - in x but not in y
 const l_difference = (x, y) => {
-    return l_search((element) => !binarySearchRec(String(element), y.map(String), 0, null), x.map((item) => String(item)));
+    return l_search((element) => !seqSearchRec(element, y), x);
 };
 
 function parseArguments() {
@@ -251,7 +290,7 @@ function main() {
 
         // Recursively sort the result: numbers first, then words alphabetically
         const sortedResult = l_mergeSort(result) || [];
-        console.log("Sorted result:", sortedResult);
+        console.log("Final Result:", sortedResult);
         // Output to result.txt file
         try { 
             fs.writeFileSync("result.txt", sortedResult.join("\n"));

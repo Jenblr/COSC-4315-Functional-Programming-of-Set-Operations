@@ -22,7 +22,7 @@ l_toLower = lambda x: list(map(lambda word: l_toLowerHelper(word), x))
 l_toLowerHelper = lambda word: ('' if not word else word[0] + l_toLowerHelper(word[1:])) if not word or not 'A' <= word[0] <= 'Z' else (chr(ord(word[0]) + 32) + l_toLowerHelper(word[1:]))
 
 # Strips white space and removes symbols except for periods
-l_replaceSymbols = lambda text, symbols: '' if not text else (' ' + l_replaceSymbols(text[1:],symbols)) if seqSearchRec(text[0], symbols) else text[0] + l_replaceSymbols(text[1:],symbols)
+l_replaceSymbols = lambda text, symbols: '' if not text else (' ' + l_replaceSymbols(text[1:],symbols)) if seqSearchRec(text[0], symbols) else text[0] + l_replaceSymbols(text[1:], symbols)
 
 # Checks if a string contains a mixture of characters and digits
 l_checkString = lambda text: all(map(lambda c: c.isalpha(), text)) or all(map(lambda c: c.isdigit(), text))
@@ -160,7 +160,7 @@ def readFile(filename):
             
             # Convert numerical strings to integers or floats
             text = [int(word) if word.isdigit() else float(word) if word.replace('.', '', 1).isdigit() else word for word in text]
-            return text
+            return l_mergeSort(text)
     except FileNotFoundError as e:
         raise FileNotFoundError(f"Error: File not found: {filename}") from e
     except Exception as e:
@@ -194,8 +194,8 @@ def main():
 
     # Read input files
     try:
-        set1 = l_mergeSort(readFile(input1))
-        set2 = l_mergeSort(readFile(input2))
+        set1 = readFile(input1)
+        set2 = readFile(input2)
     except (ValueError, FileNotFoundError) as e:
         print(e)
         sys.exit(1)
@@ -217,7 +217,7 @@ def main():
     # Recursively sort the result: numbers first, then words alphabetically
     sorted_result = l_mergeSort(result) if result else []
 
-    print("Result:", sorted_result)
+    print("Final Result:", sorted_result)
 
     # Output to result.txt file
     try: 
