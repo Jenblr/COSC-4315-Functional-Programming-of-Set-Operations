@@ -58,23 +58,18 @@ function definitions.
 
 Lambda Functions: 
 * Lowercase Conversion:
-* Lowercase Conversion:
     * Lambda function 'l_toLower' converts the character to lowercase recursively.
     * It is used for processing words and ensuring uniformity in the input data
 * Symbol Stripping:
-* Symbol Stripping:
     * Lambda function 'l_replaceSymbols' removes symbols from text while preserving periods.
     * It uses a recursive approach to replace syumbols with spaces or remove them entirely.
-* Period Removal and Splitting:
 * Period Removal and Splitting:
     * Lambda function 'l_removePeriods' splits text where necessary while retaining periods in valid
     numerical values
     * It ensures proper segmentation of words and numerical values.
 * Set Operations and Search:
-* Set Operations and Search:
     * Lambda function 'l_search' is employed for recursive search operations within lists.
     * It enables efficient searchign for elements based on custom criteria.
-* Merge Sort: 
 * Merge Sort: 
     * Lambda functions 'l_mergeSort' and 'l_merge' implement the merge sort algorithm recursively.
     * They  facilitate sorting of elemnts, ensuring efficient set operations.
@@ -94,11 +89,6 @@ elements from input files.
     3. Handling numerical and alphabetical sorting requirements.
 
 **ISSUES ENCOUNTERED:**
-1. Floating-Point Error:
-    * This program does not properly identify and separate floating-points, should they contain more than 1
-    decimal points.
-    * Example: '12.54.32' should separate as '12.54' and '32'. Instead, this program separates it as '12'
-    and '54.32'.
 
 **DEPENDENCIES:**
 * For the Python Script('setops.py'):
