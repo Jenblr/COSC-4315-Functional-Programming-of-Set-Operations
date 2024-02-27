@@ -131,8 +131,8 @@ const l_merge = (left, right) => {
     if (!left.length) return right;
 
     // Convert numerical strings to integers or floats or the given string
-    tempLeft = castString(left[0].toString());
-    tempRight = castString(right[0].toString());
+    const tempLeft = castString(left[0].toString());
+    const tempRight = castString(right[0].toString());
 
     if (typeof tempLeft === 'number' && typeof tempRight === 'number') {
         if (tempLeft < tempRight) {
@@ -237,8 +237,7 @@ function readFile(filename) {
             if (/^\d+$/.test(word)) {
                 return parseInt(word);
             } else if (/^\d+(\.\d+)?$/.test(word)) {
-                decimalPlaces = splitRec(word, '').reverse().join('').indexOf('.')
-                // return parseFloat(word);
+                const decimalPlaces = splitRec(word, '').reverse().join('').indexOf('.')
                 return parseFloat(word).toFixed(decimalPlaces);
             } else {
                 return word;

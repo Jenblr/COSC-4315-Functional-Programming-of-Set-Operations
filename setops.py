@@ -163,7 +163,7 @@ def readFile(filename):
             
             # Convert numerical strings to integers or floats
             text = [int(word) if word.isdigit() else format(float(word), f".{len(word.split('.')[1])}f") if word.replace('.', '', 1).isdigit() else word for word in text]
-            # text = [int(word) if word.isdigit() else float(word) if word.replace('.', '', 1).isdigit() else word for word in text]
+            
             return l_mergeSort(text)
     except FileNotFoundError as e:
         raise FileNotFoundError(f"Error: File not found: {filename}") from e
