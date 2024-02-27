@@ -78,7 +78,7 @@ const splitStringRec = function(string, result=[], current='') {
         const newstr = string.length > 1 && string[0] === '.' ? string.slice(1) : string;
         string = newstr;
         current = '';
-    } else if (current.match(/[a-zA-Z]/) && (string[0].match(/\d/) || string[0] === '.')) {
+    } else if (l_isAlpha(current) && (string[0].match(/\d/) || string[0] === '.')) {
         result.push(current);
         current = '';
     }
