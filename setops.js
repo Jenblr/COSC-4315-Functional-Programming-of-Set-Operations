@@ -115,26 +115,41 @@ const l_mergeSort = (lst) => {
     return l_merge(left, right);
 };
 
+// Convert numerical strings to integers or floats else return the string
+const castString = (word) => {
+    if (/^\d+$/.test(word)) {
+        return parseInt(word);
+    } else if (/^\d+(\.\d+)?$/.test(word)) {
+        return parseFloat(word);
+    } else {
+        return word;
+    }
+};
+
 const l_merge = (left, right) => {
     if (!right.length) return left;
     if (!left.length) return right;
 
-    if (typeof left[0] === 'number' && typeof right[0] === 'number') {
-        if (left[0] < right[0]) {
+    // Convert numerical strings to integers or floats or the given string
+    tempLeft = castString(left[0].toString());
+    tempRight = castString(right[0].toString());
+
+    if (typeof tempLeft === 'number' && typeof tempRight === 'number') {
+        if (tempLeft < tempRight) {
             return [left[0], ...l_merge(left.slice(1), right)];
-        } else if (left[0] > right[0]) {
+        } else if (tempLeft > tempRight) {
             return [right[0], ...l_merge(left, right.slice(1))];
         } else {
             return [left[0], right[0], ...l_merge(left.slice(1), right.slice(1))];
         }
-    } else if (typeof left[0] === 'number' && typeof right[0] === 'string') {
+    } else if (typeof tempLeft === 'number' && typeof tempRight === 'string') {
         return [left[0], ...l_merge(left.slice(1), right)];
-    } else if (typeof left[0] === 'string' && typeof right[0] === 'number') {
+    } else if (typeof tempLeft === 'string' && typeof tempRight === 'number') {
         return [right[0], ...l_merge(left, right.slice(1))];
     } else {
-        if (left[0] < right[0]) {
+        if (tempLeft < tempRight) {
             return [left[0], ...l_merge(left.slice(1), right)];
-        } else if (left[0] > right[0]) {
+        } else if (tempLeft > tempRight) {
             return [right[0], ...l_merge(left, right.slice(1))];
         } else {
             return [left[0], right[0], ...l_merge(left.slice(1), right.slice(1))];
@@ -222,7 +237,9 @@ function readFile(filename) {
             if (/^\d+$/.test(word)) {
                 return parseInt(word);
             } else if (/^\d+(\.\d+)?$/.test(word)) {
-                return parseFloat(word);
+                decimalPlaces = splitRec(word, '').reverse().join('').indexOf('.')
+                // return parseFloat(word);
+                return parseFloat(word).toFixed(decimalPlaces);
             } else {
                 return word;
             }

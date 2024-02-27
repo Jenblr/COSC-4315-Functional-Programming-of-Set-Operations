@@ -81,13 +81,16 @@ def l_merge(left, right):
     if not left:
         return right
 
-    if isinstance(left[0], (int, float)) and isinstance(right[0], (int, float)):
-        if left[0] < right[0]:
+    tempLeft = int(left[0]) if str(left[0]).isdigit() else float(left[0]) if left[0].replace('.', '', 1).isdigit() else left[0]
+    tempRight = int(right[0]) if str(right[0]).isdigit() else float(right[0]) if right[0].replace('.', '', 1).isdigit() else right[0]
+
+    if isinstance(tempLeft, (int, float)) and isinstance(tempRight, (int, float)):
+        if tempLeft < tempRight:
             return [left[0]] + l_merge(left[1:], right)
         else:
             return [right[0]] + l_merge(left, right[1:])
     else:
-        if str(left[0]) < str(right[0]):
+        if str(tempLeft) < str(tempRight):
             return [left[0]] + l_merge(left[1:], right)
         else:
             return [right[0]] + l_merge(left, right[1:])
@@ -159,7 +162,8 @@ def readFile(filename):
             text = l_removeDuplicates(l_toLower(l_processWords(splitRec(l_replaceSymbols(file_contents_copy, commonSymbols), ' '))))
             
             # Convert numerical strings to integers or floats
-            text = [int(word) if word.isdigit() else float(word) if word.replace('.', '', 1).isdigit() else word for word in text]
+            text = [int(word) if word.isdigit() else format(float(word), f".{len(word.split('.')[1])}f") if word.replace('.', '', 1).isdigit() else word for word in text]
+            # text = [int(word) if word.isdigit() else float(word) if word.replace('.', '', 1).isdigit() else word for word in text]
             return l_mergeSort(text)
     except FileNotFoundError as e:
         raise FileNotFoundError(f"Error: File not found: {filename}") from e
