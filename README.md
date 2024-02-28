@@ -2,10 +2,7 @@
 # Authors: Jennifer Nguyen, Elinnoel Nunez
 ---
 **INTRODUCTION:**
-This program, available in both Python and JavaScript versions, is designed to perform set operations such 
-as union, intersection, and difference on two sets of data read from files. It provides a command-line 
-interface for specifying the sets and the operation to perform and outputs the result to a file named
-"result.txt".
+This program, available in both Python and JavaScript versions, is designed to perform set operations such as union, intersection, and difference on two sets of data read from files. It provides a command-line interface for specifying the sets and the operation to perform and outputs the result to a file named "result.txt".
 
 ---
 # Table of Contents
@@ -27,12 +24,12 @@ interface for specifying the sets and the operation to perform and outputs the r
     - Intersection: Finds common elements between both sets.
     - Difference: Finds elements that are in the first set but not in the second.
 **2. Input File Handing:**
-    - The program reads data f rom input files specified in the command string.
+    - The program reads data from input files specified in the command string.
     - It processes the data to remove symbols, excluding periods given a valid floating-point, and converts characters into lowercase.
-    - Numerical strings are converted to itnegers or floats, where applicabale.
+    - Numerical strings are converted to integers or floats, where applicable.
 **3. Error Handling:**
     - The program gracefully handles file not found errors, invalid operations, and other exceptions.
-    - Error messages are disdplayed to guide the user on how to recity the issues.
+    - Error messages are displayed to guide the user on how to rectify the issues.
 **4. Output:**
     - The result of the set operation is written to a file name 'result.txt'.
     - If the result is empty for intersection or union, appropriate messages are written to the file.
@@ -41,11 +38,17 @@ interface for specifying the sets and the operation to perform and outputs the r
 ## USAGE:
 **Command Line Interface:**
 * The program is executed from the command line using Python 3 or Node.js for Python and JavaScript versions respectively.
-* Users provide a command line string contianing the names of the input files, the operation to perform, and other parameteres.
+* Users provide a command line string containing the names of the input files, the operation to perform, and other parameters.
 
 **Command String Format:**
-* For Python: python3 setops.py "set1=<filename>;set2=<filename>;operation=<operation>"
-* For JavaScript: node setops.js "set1=<filename>;set2=<filename>;operation=<operation>"
+* For Python: 
+```
+python3 setops.py "set1=<filename>;set2=<filename>;operation=<operation>"
+```
+* For JavaScript: 
+```
+node setops.js "set1=<filename>;set2=<filename>;operation=<operation>"
+```
 
 **Valid Operations:**
 * Users can specify one of the following operations: 'union', 'intersection', or 'difference'
@@ -54,7 +57,7 @@ interface for specifying the sets and the operation to perform and outputs the r
 ## LAMBDA FUNCTIONS OVERVIEW:
 * Both Python and JavaScript versions of this program make extensive use of lambda function for various
 operations, enhancing the readability and conciseness of the code.
-* Lambda functions are anonymous fucntions that can be defined inline, elmindating the need for separate function definitions.
+* Lambda functions are anonymous functions that can be defined inline, eliminating the need for separate function definitions.
 
 
 ### LAMBDA FUNCTION: 
@@ -63,14 +66,12 @@ functions, but each language has differences for their own syntax, handling of a
 for expressions versus block bodies._
 
 **Lowercase Conversion:**
-- Lambda function 'l_toLower' utilizes the 'map()' function to iterate over each word in the input
-list and applies 'l_toLowerHelper' function to each word recursively.
-- Lambda function 'l_toLowerHelper' is a recursive function that performs the actual conversion of
-uppcase characters to lowercase within a word.
+- Lambda function 'l_toLower' utilizes the 'map()' function to iterate over each word in the input list and applies 'l_toLowerHelper' function to each word recursively.
+- Lambda function 'l_toLowerHelper' is a recursive function that performs the actual conversion of uppercase characters to lowercase within a word.
 
 **Symbol Stripping:**
  - Lambda function 'l_replaceSymbols' removes symbols from text while preserving periods.
-- The program uses a recursive approach to replace syumbols with spaces or remove them entirely.
+- The program uses a recursive approach to replace symbols with spaces or remove them entirely.
 
 **Period Removal and Splitting:**
 - Lambda function 'l_removePeriods' splits text where necessary while retaining periods in valid
@@ -103,11 +104,11 @@ alphabetic or if there contains digits
 
 **Set Operations and Search:**
 - Lambda function 'l_search' is employed for recursive search operations within lists.
-- The program enables efficient searchign for elements based on custom criteria.
+- The program enables efficient searching for elements based on custom criteria.
 
 **Merge Sort:** 
 - Lambda functions 'l_mergeSort' and 'l_merge' implement the merge sort algorithm recursively.
-- The program facilitate sorting of elemnts, ensuring efficient set operations.
+- The program facilitate sorting of elements, ensuring efficient set operations.
 
 **Set Operations:**
 - Lambda function 'l_intersect' computes the intersection between two lists using 'l_search' to identify
@@ -162,7 +163,7 @@ Error handling in the Set Operations Program is comprehensive and designed to gu
 _Note: Although the program's requirements outlined in the 'string-setops.pdf' did not specifically state that these issues should be addressed, our authors acknowledged and proceeded with solutions should the program encounter test cases that fail to meet result expectations._
 
 **1. Floating-Point Error:**
-* Initially, this program did not properly identify and separate floating-points, should they contain more 
+* Initially, this program did not properly identify and separate floating points, should they contain more 
         than 1 decimal points.
 * Example: '12.54.32' should separate as '12.54' and '32'. Instead, the program separated it as '12' and '54.32'.
 * Solution:
@@ -178,27 +179,27 @@ _Note: Although the program's requirements outlined in the 'string-setops.pdf' d
 
 **3. Ordering of Result:**
 * Initially, this program did not properly ordered the elements in the array based on numbers first in numerical value-order and then words in lexicographical order.
-* Example: ['1','11','12','123','13','50','apple','bat','dog','frog'] should be ordered as [1, 11, 12, 13, 50, 123, 'apple', 'bat', 'dog', 'frog'].
-* Solution: Both the Python and JavaScript versions were updated to utilize the l_mergeSort function, which implements the merge sort algorithm to sort the elements in the desired order.Additionally, a custom sorting logic was applied to  ensure proper ordering based on the data type (numeric or string). 
+* Example: ['1','11','12','123','13','50','apple','bat','dog','frog'] should be ordered as ['1', '11', '12', '13', '50', '123', 'apple', 'bat', 'dog', 'frog'].
+* Solution: Both the Python and JavaScript versions were updated to utilize the l_mergeSort function, which implements the merge sort algorithm to sort the elements in the desired order. Additionally, a custom sorting logic was applied to  ensure proper ordering based on the data type. 
 
 **4. Searching Through Array Elements:**
-* Initially, this program did not reliably search through the array for elements, especially if the elements contained a mix of numeric and string values.
-* Solution: Both the Python and JavaScript versions were updated to utilize sequential search instead of binary search, given that it has better time complexity and aligns better with the characteristics of the data and requirements of the operations.
+* Initially, this program implemented binary search, and it would compare lexicographical values of these elements instead of their actual value, causing it to recurse in different directions and returning incorrect values.
+* Solution: Both the Python and JavaScript versions were updated to utilize sequential search instead of binary search because it would be more complicated to add the logic to cast the values in that method. Thus, the sequential search was easier to search through in an already sorted list from the custom merge sort function.
 
 ---
 ## DEPENDENCIES:
-**For the Python Script('setops.py'):**
+**For the Python Script(`setops.py`):**
 - Python3 installed on the system
 - The 'argparse' module for parsing command-line arguments
 
-**For the JavaScript script('setops.js'):**
+**For the JavaScript script(`setops.js`):**
 - Node.js installed on the system
 - The 'yargs' module for parsing command-line arguments
 
 ---
 ## FILES INCLUDED:
-1. 'setops.py' : The main Python script containing the set operations program.
-2. 'setops.js' : The equivalent JavaScript script containing the set operations program.
+1. `setops.py` : The main Python script containing the set operations program.
+2. `setops.js` : The equivalent JavaScript script containing the set operations program.
 
 ---
 ## LICENSE:
