@@ -1,0 +1,3 @@
+cold, 12.34 blue 5678
+tree. 91011 rock 12.13
+star, 91011 moon. 91.011
